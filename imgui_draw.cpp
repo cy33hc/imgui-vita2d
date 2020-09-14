@@ -26,13 +26,13 @@ Index of this file:
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "imgui.h"
+#include "imgui_vita2d/imgui.h"
 #ifndef IMGUI_DISABLE
 
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
-#include "imgui_internal.h"
+#include "imgui_vita2d/imgui_internal.h"
 
 #include <stdio.h>      // vsnprintf, sscanf, printf
 #if !defined(alloca)

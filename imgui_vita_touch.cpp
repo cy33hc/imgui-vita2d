@@ -4,7 +4,7 @@
 #include <psp2/kernel/processmgr.h>
 #include <psp2/touch.h>
 #include <psp2/display.h>
-#include "imgui_vita_touch.h"
+#include "imgui_vita2d/imgui_vita_touch.h"
 #include <string.h>
 
 #define SDL_BUTTON_LEFT 0

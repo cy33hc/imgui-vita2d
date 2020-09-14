@@ -1,8 +1,8 @@
 #include <vita2d.h>
 #include <math.h>
 
-#include "imgui_impl_vita2d.h"
-#include "imgui_vita_touch.h"
+#include "imgui_vita2d/imgui_impl_vita2d.h"
+#include "imgui_vita2d/imgui_vita_touch.h"
 
 
 extern SceGxmProgram _binary_assets_imgui_v_cg_gxp_start;
