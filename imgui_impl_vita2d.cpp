@@ -328,7 +328,7 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
         ImGuiIO &io = ImGui::GetIO();
 
         // Setup display size (every frame to accommodate for window resizing)
-        io.DisplaySize = ImVec2((float)VITA_WIDTH, (float)VITA_WIDTH);
+        io.DisplaySize = ImVec2((float)VITA_WIDTH, (float)VITA_HEIGHT);
 
         static uint64_t frequency = 1000000;
         uint64_t current_time = sceKernelGetProcessTimeWide();
