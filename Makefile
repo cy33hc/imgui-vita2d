@@ -28,7 +28,7 @@ install: $(TARGET).a
 	@mkdir -p $(VITASDK)/$(PREFIX)/lib/
 	cp $(TARGET).a $(VITASDK)/$(PREFIX)/lib/
 	@mkdir -p $(VITASDK)/$(PREFIX)/include/imgui_vita2d
-	cp imgui_vita2d/*.h $(VITASDK)/$(PREFIX)/include/imgui_vita2d
+	cp *.h $(VITASDK)/$(PREFIX)/include/imgui_vita2d
 
 clean:
 	@rm -rf $(TARGET).a $(TARGET).elf $(OBJS)
