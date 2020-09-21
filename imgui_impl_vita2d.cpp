@@ -19,6 +19,7 @@ static bool mousestick_usage = true;
 static bool gamepad_usage = false;
 static uint32_t previous_down = 0;
 static int repeat_count = 0;
+static uint64_t previous_time = 0;
 
 #define ANALOG_CENTER 128
 #define ANALOG_THRESHOLD 64
@@ -397,17 +398,17 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                         uint32_t pressed = down & ~previous_down;
                         if (previous_down == down)
                         {
-                                if (repeat_count > 10)
+                                if (current_time - previous_time > (170000))
                                 {
                                         pressed = down;
-                                        repeat_count = 0;
+                                        previous_time = current_time;
                                 }
-                                else
-                                {
-                                        repeat_count++;
-                                }
-                                
                         }
+                        else
+                        {
+                                previous_time = current_time;
+                        }
+                        
                         if (pressed & BUTTON_LEFT)
                                 io.NavInputs[ImGuiNavInput_DpadLeft] = 1.0f;
                         if (pressed & BUTTON_RIGHT)
