@@ -398,15 +398,20 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                         uint32_t pressed = down & ~previous_down;
                         if (previous_down == down)
                         {
-                                if (current_time - previous_time > (170000))
+                                uint64_t delay = 300000;
+                                if (repeat_count > 0)
+                                        delay = 100000;
+                                if (current_time - previous_time > delay)
                                 {
                                         pressed = down;
                                         previous_time = current_time;
+                                        repeat_count++;
                                 }
                         }
                         else
                         {
                                 previous_time = current_time;
+                                repeat_count = 0;
                         }
                         
                         if (pressed & BUTTON_LEFT)
