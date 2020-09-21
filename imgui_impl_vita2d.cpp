@@ -17,6 +17,15 @@ static int             hires_y = 0;
 static bool touch_usage = false;
 static bool mousestick_usage = true;
 static bool gamepad_usage = false;
+static uint32_t previous_down = 0;
+static int repeat_count = 0;
+
+#define ANALOG_CENTER 128
+#define ANALOG_THRESHOLD 64
+#define BUTTON_LEFT 0x00000010
+#define BUTTON_RIGHT 0x00000020
+#define BUTTON_UP 0x00000040
+#define BUTTON_DOWN 0x00000080
 
 namespace
 {
@@ -373,6 +382,43 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                         if (lstick_y > 0)
                                 io.NavInputs[ImGuiNavInput_LStickDown] = (float)(lstick_y / 16);
                 }
+                else
+                {
+                        uint32_t down = 0;
+                        if (pad.lx < ANALOG_CENTER - ANALOG_THRESHOLD)
+                                down |= BUTTON_LEFT;
+                        if (pad.lx > ANALOG_CENTER + ANALOG_THRESHOLD)
+                                down |= BUTTON_RIGHT;
+                        if (pad.ly < ANALOG_CENTER - ANALOG_THRESHOLD)
+                                down |= BUTTON_UP;
+                        if (pad.ly > ANALOG_CENTER + ANALOG_THRESHOLD)
+                                down |= BUTTON_DOWN;
+
+                        uint32_t pressed = down & ~previous_down;
+                        if (previous_down == down)
+                        {
+                                if (repeat_count > 10)
+                                {
+                                        pressed = down;
+                                        repeat_count = 0;
+                                }
+                                else
+                                {
+                                        repeat_count++;
+                                }
+                                
+                        }
+                        if (pressed & BUTTON_LEFT)
+                                io.NavInputs[ImGuiNavInput_DpadLeft] = 1.0f;
+                        if (pressed & BUTTON_RIGHT)
+                                io.NavInputs[ImGuiNavInput_DpadRight] = 1.0f;
+                        if (pressed & BUTTON_UP)
+                                io.NavInputs[ImGuiNavInput_DpadUp] = 1.0f;
+                        if (pressed & BUTTON_DOWN)
+                                io.NavInputs[ImGuiNavInput_DpadDown] = 1.0f;
+                        previous_down = down;
+                }
+                
         }
 
         // Keys for mouse emulation
