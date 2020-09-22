@@ -77,6 +77,8 @@ IMGUI_API void ImGui_ImplVita2D_Init()
 {
         uint32_t err;
 
+        ImGui_ImplVita2D_CreateDeviceObjects();
+
         // check the shaders
         err = sceGxmProgramCheck(&_binary_assets_imgui_v_cg_gxp_start);
         err = sceGxmProgramCheck(&_binary_assets_imgui_f_cg_gxp_start);
@@ -247,16 +249,22 @@ IMGUI_API bool ImGui_ImplVita2D_CreateDeviceObjects()
         // Build and load the texture atlas into a texture
         uint32_t* pixels = NULL;
         int width, height;
-        io.Fonts->AddFontFromFileTTF(
-                    "sa0:/data/font/pvf/ltn0.pvf",
-                    16.0f,
-                    0,
-                    io.Fonts->GetGlyphRangesDefault());
+
+        ImFontConfig font_config;
+        font_config.OversampleH = 1;
+        font_config.OversampleV = 1;
+        font_config.PixelSnapH = 1;
+
         io.Fonts->AddFontFromFileTTF(
                     "sa0:/data/font/pvf/jpn0.pvf",
                     16.0f,
-                    0,
+                    &font_config,
                     io.Fonts->GetGlyphRangesJapanese());
+        io.Fonts->AddFontFromFileTTF(
+                    "sa0:/data/font/pvf/ltn0.pvf",
+                    16.0f,
+                    &font_config,
+                    io.Fonts->GetGlyphRangesDefault());
         io.Fonts->GetTexDataAsRGBA32((uint8_t**)&pixels, &width, &height);
         g_FontTexture =
                 vita2d_create_empty_texture(width, height);
@@ -331,9 +339,6 @@ void ImGui_ImplVita2D_PollLeftStick(SceCtrlData *pad, int *x, int *y)
 
 IMGUI_API void ImGui_ImplVita2D_NewFrame()
 {
-
-        if (!g_FontTexture)
-                ImGui_ImplVita2D_CreateDeviceObjects();
 
         ImGuiIO &io = ImGui::GetIO();
 
