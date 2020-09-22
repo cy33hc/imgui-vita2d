@@ -388,7 +388,7 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                         if (lstick_y > 0)
                                 io.NavInputs[ImGuiNavInput_LStickDown] = (float)(lstick_y / 16);
                 }
-                else
+                else if (!mousestick_usage)
                 {
                         uint32_t down = 0;
                         if (pad.lx < ANALOG_CENTER - ANALOG_THRESHOLD)
