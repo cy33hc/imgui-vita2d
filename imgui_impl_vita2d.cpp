@@ -20,6 +20,7 @@ static bool gamepad_usage = false;
 static uint32_t previous_down = 0;
 static int repeat_count = 0;
 static uint64_t previous_time = 0;
+static uint32_t disabled_buttons = 0;
 
 #define ANALOG_CENTER 128
 #define ANALOG_THRESHOLD 64
@@ -366,14 +367,22 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                 SceCtrlData pad;
                 int lstick_x, lstick_y = 0;
                 ImGui_ImplVita2D_PollLeftStick(&pad, &lstick_x, &lstick_y);
-                io.NavInputs[ImGuiNavInput_Activate] = (pad.buttons & SCE_CTRL_CROSS) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_Cancel] = (pad.buttons & SCE_CTRL_CIRCLE) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_Input] = (pad.buttons & SCE_CTRL_TRIANGLE) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_Menu] = (pad.buttons & SCE_CTRL_SQUARE) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_DpadLeft] = (pad.buttons & SCE_CTRL_LEFT) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_DpadRight] = (pad.buttons & SCE_CTRL_RIGHT) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_DpadUp] = (pad.buttons & SCE_CTRL_UP) ? 1.0f : 0.0f;
-                io.NavInputs[ImGuiNavInput_DpadDown] = (pad.buttons & SCE_CTRL_DOWN) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_CROSS))
+                        io.NavInputs[ImGuiNavInput_Activate] = (pad.buttons & SCE_CTRL_CROSS) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_CIRCLE))
+                        io.NavInputs[ImGuiNavInput_Cancel] = (pad.buttons & SCE_CTRL_CIRCLE) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_TRIANGLE))
+                        io.NavInputs[ImGuiNavInput_Input] = (pad.buttons & SCE_CTRL_TRIANGLE) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_SQUARE))
+                        io.NavInputs[ImGuiNavInput_Menu] = (pad.buttons & SCE_CTRL_SQUARE) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_LEFT))
+                        io.NavInputs[ImGuiNavInput_DpadLeft] = (pad.buttons & SCE_CTRL_LEFT) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_RIGHT))
+                        io.NavInputs[ImGuiNavInput_DpadRight] = (pad.buttons & SCE_CTRL_RIGHT) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_UP))
+                        io.NavInputs[ImGuiNavInput_DpadUp] = (pad.buttons & SCE_CTRL_UP) ? 1.0f : 0.0f;
+                if (!(disabled_buttons & SCE_CTRL_DOWN))
+                        io.NavInputs[ImGuiNavInput_DpadDown] = (pad.buttons & SCE_CTRL_DOWN) ? 1.0f : 0.0f;
 
                 if (io.NavInputs[ImGuiNavInput_Menu] == 1.0f)
                 {
@@ -488,4 +497,9 @@ void ImGui_ImplVita2D_MouseStickUsage(bool val)
 void ImGui_ImplVita2D_GamepadUsage(bool val)
 {
         gamepad_usage = val;
+}
+
+void ImGui_ImplVita2D_DisableButtons(uint32_t buttons)
+{
+        disabled_buttons = buttons;
 }

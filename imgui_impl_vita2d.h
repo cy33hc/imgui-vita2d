@@ -27,3 +27,5 @@ void ImGui_ImplVita2D_MouseStickUsage(bool val);
 
 // GamepadUsage uses the Vita buttons to navigate and interact with UI elements
 void ImGui_ImplVita2D_GamepadUsage(bool val);
+
+void ImGui_ImplVita2D_DisableButtons(unsigned int buttons);
