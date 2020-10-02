@@ -19,6 +19,7 @@ static bool mousestick_usage = true;
 static bool gamepad_usage = false;
 static uint32_t previous_down = 0;
 static int repeat_count = 0;
+static int repeat_delay = 50000;
 static uint64_t previous_time = 0;
 static uint32_t disabled_buttons = 0;
 
@@ -414,7 +415,7 @@ IMGUI_API void ImGui_ImplVita2D_NewFrame()
                         {
                                 uint64_t delay = 300000;
                                 if (repeat_count > 0)
-                                        delay = 100000;
+                                        delay = repeat_delay;
                                 if (current_time - previous_time > delay)
                                 {
                                         pressed = down;
@@ -502,4 +503,9 @@ void ImGui_ImplVita2D_GamepadUsage(bool val)
 void ImGui_ImplVita2D_DisableButtons(uint32_t buttons)
 {
         disabled_buttons = buttons;
+}
+
+void ImGui_ImplVita2D_SetAnalogRepeatDelay(int delay)
+{
+        repeat_delay = delay;
 }
