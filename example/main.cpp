@@ -8,7 +8,9 @@
 
 #include <imgui_vita2d/imgui_vita.h>
 #include <stdio.h>
-#include <vita2d.h>
+#include <psp2/gxm.h>
+#include <psp2/display.h>
+#include <vita2d_sys.h>
 
 int main(int, char**)
 {
@@ -89,8 +91,8 @@ int main(int, char**)
 		ImGui_ImplVita2D_RenderDrawData(ImGui::GetDrawData());
 
 		vita2d_end_drawing();
-		vita2d_swap_buffers();
-		sceDisplayWaitVblankStart();
+		vita2d_wait_rendering_done();
+		vita2d_end_shfb();
 	}
 
 	// Cleanup

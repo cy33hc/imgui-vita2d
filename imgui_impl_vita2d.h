@@ -1,4 +1,5 @@
-#include <vitasdk.h>
+#include <psp2/kernel/processmgr.h>
+#include <psp2/ctrl.h>
 #include "imgui.h"
 
 #define VITA_WIDTH 960
