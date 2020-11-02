@@ -262,11 +262,6 @@ IMGUI_API bool ImGui_ImplVita2D_CreateDeviceObjects()
                     16.0f,
                     &font_config,
                     io.Fonts->GetGlyphRangesJapanese());
-        io.Fonts->AddFontFromFileTTF(
-                    "sa0:/data/font/pvf/ltn0.pvf",
-                    16.0f,
-                    &font_config,
-                    io.Fonts->GetGlyphRangesDefault());
         io.Fonts->GetTexDataAsRGBA32((uint8_t**)&pixels, &width, &height);
         g_FontTexture =
                 vita2d_create_empty_texture(width, height);
