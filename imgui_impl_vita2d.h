@@ -31,3 +31,5 @@ void ImGui_ImplVita2D_GamepadUsage(bool val);
 void ImGui_ImplVita2D_DisableButtons(unsigned int buttons);
 
 void ImGui_ImplVita2D_SetAnalogRepeatDelay(int delay);
+
+void ImGui_ImplVita2D_SwapXO(bool val);
