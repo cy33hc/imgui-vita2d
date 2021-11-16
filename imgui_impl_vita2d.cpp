@@ -229,11 +229,11 @@ IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
                         else
                         {
                                 vita2d_set_clip_rectangle((int)pcmd->ClipRect.x, (int)(fb_height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-
-                                auto err = sceGxmSetVertexStream(_vita2d_context, 0, vertices);
 				
                                 sceGxmSetVertexProgram(_vita2d_context, _vita2d_imguiVertexProgram);
                                 sceGxmSetFragmentProgram(_vita2d_context, _vita2d_imguiFragmentProgram);
+								
+                                auto err = sceGxmSetVertexStream(_vita2d_context, 0, vertices);
 
                                 void *vertex_wvp_buffer;
                                 sceGxmReserveVertexDefaultUniformBuffer(
