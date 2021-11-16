@@ -190,16 +190,17 @@ IMGUI_API void ImGui_ImplVita2D_Init()
 
 IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
 {
+        // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
+       ImGuiIO& io = ImGui::GetIO();
+       int fb_width = (int)(io.DisplaySize.x * io.DisplayFramebufferScale.x);
+       int fb_height = (int)(io.DisplaySize.y * io.DisplayFramebufferScale.y);
+       if (fb_width == 0 || fb_height == 0)
+           return;
+       draw_data->ScaleClipRects(io.DisplayFramebufferScale);
+
         auto _vita2d_context = vita2d_get_context();
-
-        sceGxmSetVertexProgram(_vita2d_context, _vita2d_imguiVertexProgram);
-        sceGxmSetFragmentProgram(_vita2d_context, _vita2d_imguiFragmentProgram);
-
-        void *vertex_wvp_buffer;
-        sceGxmReserveVertexDefaultUniformBuffer(
-            vita2d_get_context(), &vertex_wvp_buffer);
-        sceGxmSetUniformDataF(
-            vertex_wvp_buffer, _vita2d_imguiWvpParam, 0, 16, ortho_proj_matrix);
+		
+        vita2d_enable_clipping();
 
         for (int n = 0; n < draw_data->CmdListsCount; n++)
         {
@@ -208,7 +209,7 @@ IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
                 const auto vtx_size = cmd_list->VtxBuffer.Size;
                 const auto idx_buffer = cmd_list->IdxBuffer.Data;
                 const auto idx_size = cmd_list->IdxBuffer.Size;
-
+				
                 const auto vertices = vita2d_pool_memalign(
                     vtx_size * ImguiVertexSize, ImguiVertexSize);
                 memcpy(vertices, vtx_buffer, vtx_size * ImguiVertexSize);
@@ -217,8 +218,6 @@ IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
                 auto indices = (uint16_t *)vita2d_pool_memalign(
                     idx_size * sizeof(ImDrawIdx), sizeof(void *));
                 memcpy(indices, idx_buffer, idx_size * sizeof(ImDrawIdx));
-
-                auto err = sceGxmSetVertexStream(_vita2d_context, 0, vertices);
 
                 for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
                 {
@@ -229,6 +228,19 @@ IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
                         }
                         else
                         {
+                                vita2d_set_clip_rectangle((int)pcmd->ClipRect.x, (int)(fb_height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+
+                                auto err = sceGxmSetVertexStream(_vita2d_context, 0, vertices);
+				
+                                sceGxmSetVertexProgram(_vita2d_context, _vita2d_imguiVertexProgram);
+                                sceGxmSetFragmentProgram(_vita2d_context, _vita2d_imguiFragmentProgram);
+
+                                void *vertex_wvp_buffer;
+                                sceGxmReserveVertexDefaultUniformBuffer(
+                                    vita2d_get_context(), &vertex_wvp_buffer);
+                                sceGxmSetUniformDataF(
+                                    vertex_wvp_buffer, _vita2d_imguiWvpParam, 0, 16, ortho_proj_matrix);
+								
                                 const auto texture = (vita2d_texture *)pcmd->TextureId;
                                 err = sceGxmSetFragmentTexture(
                                     _vita2d_context, 0, &texture->gxm_tex);
@@ -243,6 +255,8 @@ IMGUI_API void ImGui_ImplVita2D_RenderDrawData(ImDrawData *draw_data)
                         indices += pcmd->ElemCount;
                 }
         }
+
+        vita2d_disable_clipping();
 }
 
 IMGUI_API bool ImGui_ImplVita2D_CreateDeviceObjects()
